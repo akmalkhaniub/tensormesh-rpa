@@ -1,0 +1,27 @@
+{
+  "name": "tensormesh-rpa",
+  "version": "1.0.0",
+  "description": "GPU-Accelerated Vision-Agent Automation for Nebius x NVIDIA Global AI Hackathon",
+  "main": "src/ui_grounding_engine.js",
+  "type": "module",
+  "scripts": {
+    "test": "node test/verify_tensormesh.js",
+    "start": "node test/verify_tensormesh.js"
+  },
+  "dependencies": {
+    "dotenv": "^16.4.7"
+  },
+  "devDependencies": {},
+  "keywords": [
+    "nvidia",
+    "nebius",
+    "gpu",
+    "vllm",
+    "tensorrt",
+    "vision-agent",
+    "rpa",
+    "grounding"
+  ],
+  "author": "Antigravity Builder",
+  "license": "MIT"
+}
