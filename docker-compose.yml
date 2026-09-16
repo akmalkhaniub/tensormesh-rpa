@@ -1,0 +1,20 @@
+services:
+  tensormesh-rpa:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: tensormesh-rpa:latest
+    container_name: tensormesh-rpa
+    ports:
+      - "3004:3004"
+    environment:
+      - NODE_ENV=production
+      - PORT=3004
+      - NEBIUS_API_KEY=${NEBIUS_API_KEY:-your_nebius_api_key_here}
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://127.0.0.1:3004/api/health"]
+      interval: 15s
+      timeout: 5s
+      retries: 3
+      start_period: 5s
+    restart: unless-stopped
