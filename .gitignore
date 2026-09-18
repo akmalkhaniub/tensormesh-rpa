@@ -8,3 +8,5 @@ coverage/
 *.weights
 *.pt
 *.bin
+
+*.tsbuildinfo

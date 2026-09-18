@@ -3,27 +3,39 @@
  * Predicts spatial bounding boxes [ymin, xmin, ymax, xmax] and target action coordinates.
  */
 
+export interface DetectedElement {
+  label: string;
+  bbox: [number, number, number, number];
+  type: string;
+}
+
+export interface GroundingResult {
+  targetDescription: string;
+  matchedLabel: string;
+  elementType: string;
+  bbox: [number, number, number, number];
+  coordinates: { x: number; y: number };
+  isSafe: boolean;
+  groundingConfidence: number;
+}
+
 export class UIGroundingEngine {
-  constructor(options = {}) {
+  screenWidth: number;
+  screenHeight: number;
+
+  constructor(options: { screenWidth?: number; screenHeight?: number } = {}) {
     this.screenWidth = options.screenWidth || 1920;
     this.screenHeight = options.screenHeight || 1080;
   }
 
-  /**
-   * Predict interactive element bounding coordinates from a target description
-   * @param {string} targetDescription 
-   * @param {Array<Object>} detectedElements 
-   * @returns {Object} Grounded bounding box and center coordinate
-   */
-  groundElement(targetDescription, detectedElements = []) {
+  /** Predict interactive element bounding coordinates from a target description. */
+  groundElement(targetDescription: string, detectedElements: DetectedElement[] = []): GroundingResult {
     const desc = targetDescription.toLowerCase();
 
-    // Find best match in detected screen elements
-    let match = detectedElements.find(e => 
-      e.label.toLowerCase().includes(desc) || desc.includes(e.label.toLowerCase())
+    let match = detectedElements.find(
+      (e) => e.label.toLowerCase().includes(desc) || desc.includes(e.label.toLowerCase())
     );
 
-    // Fallback heuristic simulation if raw screenshot frame without pre-extracted OCR
     if (!match) {
       if (desc.includes('submit') || desc.includes('save') || desc.includes('confirm')) {
         match = { label: 'Submit Button', bbox: [850, 1550, 890, 1750], type: 'BUTTON' };
@@ -37,16 +49,9 @@ export class UIGroundingEngine {
     }
 
     const [ymin, xmin, ymax, xmax] = match.bbox;
-
-    // Center click point
     const centerX = Math.round((xmin + xmax) / 2);
     const centerY = Math.round((ymin + ymax) / 2);
-
-    // Enforce safety boundary checks
-    const isSafe = (
-      centerX >= 0 && centerX <= this.screenWidth &&
-      centerY >= 0 && centerY <= this.screenHeight
-    );
+    const isSafe = centerX >= 0 && centerX <= this.screenWidth && centerY >= 0 && centerY <= this.screenHeight;
 
     return {
       targetDescription,

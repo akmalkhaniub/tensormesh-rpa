@@ -1,6 +1,8 @@
 # Technical Specification: TensorMesh RPA
 **Project Name:** TensorMesh RPA (Nebius × NVIDIA Global AI Hackathon)  
-**Status:** Ready for Implementation  
+**Status:** Prototype implemented — spec is target design (updated 2026-09-18)  
+
+> **Implementation status (2026-09-18):** The sections below describe the *target* architecture. Built: a Node.js UI-grounding parser (model output → coordinates/actions), an action planner, and a **mock** Nebius/NVIDIA client + GPU benchmarker (366 LOC, passing tests). Not yet built: a real Nebius GPU instance, vLLM/TensorRT-LLM VLM serving, live screen/WebRTC capture, and real OS automation drivers. Benchmarks and the monitoring dashboard are simulated/static.
 **Version:** 1.0.0  
 
 ---

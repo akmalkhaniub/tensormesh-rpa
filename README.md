@@ -1,5 +1,6 @@
 # ⚡ TensorMesh RPA — Ultra-Low-Latency Visual Desktop Automation
 
+[![TypeScript: strict](https://img.shields.io/badge/TypeScript-strict-3178c6.svg)](https://www.typescriptlang.org)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
 [![Nebius: Token Factory](https://img.shields.io/badge/Nebius-Token%20Factory%202026-blueviolet.svg)](https://studio.nebius.ai)
 [![NVIDIA: TensorRT-LLM](https://img.shields.io/badge/NVIDIA-TensorRT--LLM%20H100-76B900.svg)](https://www.nvidia.com)
