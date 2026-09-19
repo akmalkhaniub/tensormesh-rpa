@@ -31,10 +31,27 @@ export class UIGroundingEngine {
   /** Predict interactive element bounding coordinates from a target description. */
   groundElement(targetDescription: string, detectedElements: DetectedElement[] = []): GroundingResult {
     const desc = targetDescription.toLowerCase();
+    const stop = new Set(['the', 'a', 'an', 'to', 'of', 'and', 'for', 'button', 'field', 'box']);
+    const descTokens = desc.split(/\W+/).filter((t) => t && !stop.has(t));
 
-    let match = detectedElements.find(
-      (e) => e.label.toLowerCase().includes(desc) || desc.includes(e.label.toLowerCase())
-    );
+    // Score detected elements by shared significant tokens; pick the best (>0) match.
+    let match: DetectedElement | undefined;
+    let bestScore = 0;
+    for (const e of detectedElements) {
+      const label = e.label.toLowerCase();
+      if (label.includes(desc) || desc.includes(label)) {
+        match = e;
+        bestScore = Infinity;
+        break;
+      }
+      const labelTokens = new Set(label.split(/\W+/).filter(Boolean));
+      const overlap = descTokens.filter((t) => labelTokens.has(t)).length;
+      if (overlap > bestScore) {
+        bestScore = overlap;
+        match = e;
+      }
+    }
+    if (bestScore === 0) match = undefined;
 
     if (!match) {
       if (desc.includes('submit') || desc.includes('save') || desc.includes('confirm')) {

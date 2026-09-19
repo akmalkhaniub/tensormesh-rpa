@@ -6,7 +6,7 @@
   "type": "module",
   "scripts": {
     "start": "node dist/server.js",
-    "test": "npm run typecheck && tsx test/verify_tensormesh.ts && tsx test/server_integration.ts",
+    "test": "npm run typecheck && tsx test/verify_tensormesh.ts && tsx test/eval.test.ts && tsx test/server_integration.ts",
     "docker:build": "docker build -t tensormesh-rpa:latest .",
     "docker:run": "docker run -d -p 3004:3004 --name tensormesh-rpa tensormesh-rpa:latest",
     "tunnel": "powershell -ExecutionPolicy Bypass -File deploy/free/tunnel.ps1",
@@ -14,7 +14,8 @@
     "typecheck": "tsc -p tsconfig.test.json",
     "dev": "tsx watch src/server.ts",
     "test:unit": "tsx test/verify_tensormesh.ts",
-    "test:integration": "tsx test/server_integration.ts"
+    "test:integration": "tsx test/server_integration.ts",
+    "test:eval": "tsx test/eval.test.ts"
   },
   "dependencies": {
     "dotenv": "^16.6.1"
