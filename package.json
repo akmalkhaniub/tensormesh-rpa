@@ -15,13 +15,15 @@
     "dev": "tsx watch src/server.ts",
     "test:unit": "tsx test/verify_tensormesh.ts",
     "test:integration": "tsx test/server_integration.ts",
-    "test:eval": "tsx test/eval.test.ts"
+    "test:eval": "tsx test/eval.test.ts",
+    "coverage": "c8 sh -c \"tsx test/verify_tensormesh.ts && tsx test/eval.ts && tsx test/server_integration.ts\""
   },
   "dependencies": {
     "dotenv": "^16.6.1"
   },
   "devDependencies": {
     "@types/node": "^22.20.3",
+    "c8": "^10.1.3",
     "tsx": "^4.23.13",
     "typescript": "^5.9.3"
   },

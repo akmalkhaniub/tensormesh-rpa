@@ -10,3 +10,6 @@ coverage/
 *.bin
 
 *.tsbuildinfo
+
+coverage/
+.nyc_output/
