@@ -32,8 +32,8 @@ console.log(`   ✅ Generated ${planResult.totalSteps}-step plan.`);
 
 console.log('3️⃣ Testing NVIDIA TensorRT-LLM on Nebius Cloud Performance Metrics...');
 const benchmark = GPUBenchmarker.runBenchmark();
-assert(benchmark.nebiusNvidia.timeToFirstTokenMs === 48, 'NVIDIA H100 TTFT must be sub-50ms');
-console.log(`   📈 Speedup: ${benchmark.metrics.ttftSpeedup} | ${benchmark.metrics.tokenThroughputGain}`);
+assert(benchmark.measured === false, 'Benchmark must not claim a GPU measurement without a live call');
+assert(GPUBenchmarker.recordLiveSample(200, 20).throughputTps === 100, 'Live throughput is tokens per second from the response');
 
 console.log('4️⃣ Testing Nebius Token Factory 2026 API Integration (simulator)...');
 const nebiusClient = new NebiusNvidiaClient({ preferredEngine: 'nebius', isMock: true });

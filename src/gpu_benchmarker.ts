@@ -20,33 +20,41 @@ export interface BenchmarkResult {
 }
 
 export class GPUBenchmarker {
-  static runBenchmark(): BenchmarkResult {
-    const baselineCpu: HardwareProfile = {
-      hardware: 'Generic 16-Core Cloud CPU',
-      runtime: 'HuggingFace PyTorch FP32',
-      timeToFirstTokenMs: 840,
-      tokensPerSec: 14.2,
-      groundingLatencyPerFrameMs: 1250,
-      vramUsageGb: 0
-    };
-
-    const nebiusNvidia: HardwareProfile = {
-      hardware: 'NVIDIA H100 80GB SXM (Nebius AI Cloud)',
-      runtime: 'TensorRT-LLM FP8 Quantized',
-      timeToFirstTokenMs: 48,
-      tokensPerSec: 186.5,
-      groundingLatencyPerFrameMs: 72,
-      vramUsageGb: 14.8
-    };
-
+  /**
+   * No fabricated GPU numbers. A live measurement is attached later via
+   * `recordLiveSample` after a real Nebius or NIM response.
+   */
+  static runBenchmark(): BenchmarkResult & { measured: boolean; note: string } {
     return {
-      baselineCpu,
-      nebiusNvidia,
+      measured: false,
+      note: 'Unmeasured. Set NEBIUS_API_KEY or NVIDIA_API_KEY and call the live client; latency comes from that response, not from this function.',
+      baselineCpu: {
+        hardware: 'not measured',
+        runtime: 'n/a',
+        timeToFirstTokenMs: 0,
+        tokensPerSec: 0,
+        groundingLatencyPerFrameMs: 0,
+        vramUsageGb: 0
+      },
+      nebiusNvidia: {
+        hardware: 'not measured',
+        runtime: 'n/a',
+        timeToFirstTokenMs: 0,
+        tokensPerSec: 0,
+        groundingLatencyPerFrameMs: 0,
+        vramUsageGb: 0
+      },
       metrics: {
-        ttftSpeedup: `${(baselineCpu.timeToFirstTokenMs / nebiusNvidia.timeToFirstTokenMs).toFixed(1)}x faster`,
-        tokenThroughputGain: `${(nebiusNvidia.tokensPerSec / baselineCpu.tokensPerSec).toFixed(1)}x higher throughput`,
-        visionPerceptionGain: `${(baselineCpu.groundingLatencyPerFrameMs / nebiusNvidia.groundingLatencyPerFrameMs).toFixed(1)}x lower perceptual latency`
+        ttftSpeedup: 'unmeasured',
+        tokenThroughputGain: 'unmeasured',
+        visionPerceptionGain: 'unmeasured'
       }
     };
+  }
+
+  /** Turn one live API timing into the benchmark record. */
+  static recordLiveSample(latencyMs: number, completionTokens: number): { latencyMs: number; throughputTps: number; measured: true } {
+    const throughputTps = latencyMs > 0 ? Number((completionTokens / (latencyMs / 1000)).toFixed(1)) : 0;
+    return { latencyMs, throughputTps, measured: true };
   }
 }

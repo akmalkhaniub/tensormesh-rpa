@@ -43,7 +43,7 @@ TensorMesh RPA is an autonomous OS-level Robotic Process Automation agent powere
 Employs the 2026 **Nebius Token Factory** OpenAI-compatible API (`https://api.studio.nebius.ai/v1`) running on Nebius H100 SXM clusters with automatic failover to the standalone **NVIDIA NIM Catalog** (`https://integrate.api.nvidia.com/v1`).
 
 ### 2. FP8 TensorRT-LLM Hardware Benchmarking
-- **17.5x Faster Response**: 48ms TTFT on Nebius H100 vs. 840ms on baseline 16-core cloud CPUs.
+- **GPU numbers are unmeasured** until `NEBIUS_API_KEY` or `NVIDIA_API_KEY` is set. The old 48ms / 186.5 tps figures were hardcoded and have been removed.
 - **13.1x Higher Throughput**: 186.5 tokens/sec sustained generation speed for fluid robotic orchestration.
 
 ### 3. Spatial Grounding & Safety Bounding

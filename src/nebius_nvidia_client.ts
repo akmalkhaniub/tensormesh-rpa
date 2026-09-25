@@ -142,10 +142,10 @@ export class NebiusNvidiaClient {
     const btnY = Math.round((btnTarget.bbox[0] + btnTarget.bbox[2]) / 2);
 
     return {
-      engineUsed: this.preferredEngine === 'nebius' ? 'Nebius Token Factory (H100 SXM)' : 'NVIDIA NIM Catalog (TensorRT-LLM)',
+      engineUsed: this.preferredEngine === 'nebius' ? 'simulator (no Nebius call)' : 'simulator (no NVIDIA call)',
       model: this.model,
-      latencyMs: 48,
-      throughputTps: 186.5,
+      latencyMs: 0,
+      throughputTps: 0,
       actions: [
         { step: 1, type: 'CLICK', coordinates: { x: searchX, y: searchY }, description: `Click at (${searchX}, ${searchY})` },
         { step: 2, type: 'TYPE', text: 'Enterprise Audit Logs 2026', description: 'Type search query' },
