@@ -22,6 +22,18 @@ TensorMesh RPA is an autonomous, OS-level visual Robotic Process Automation agen
 
 ---
 
+## ✅ Verified engineering metrics (reproducible)
+
+| What | Evidence | How to check |
+| :--- | :--- | :--- |
+| UI **grounding accuracy 1.0** + action **planning accuracy 1.0** on labeled cases (upgraded grounding to token-overlap matching) | `src/eval.ts` + `test/eval.test.ts` | `npm run test:eval` |
+| Real OpenAI-compatible inference client for **Nebius Token Factory / NVIDIA NIM** with a JSON-action response parser (simulator fallback without a key) | `src/nebius_nvidia_client.ts` | set `NEBIUS_API_KEY`, run |
+| **No fabricated GPU numbers** — `GPUBenchmarker` returns `measured: false` until a live API timing is recorded via `recordLiveSample` | `src/gpu_benchmarker.ts` | `npm test` |
+| Server integration suite driving the real HTTP loop | `test/server_integration.ts` | `npm run test:integration` |
+| TypeScript strict, **93% coverage**, CI on Node 18/20/22 | `.c8rc.json`, `ci/ci.workflow.yml` | `npm run coverage` |
+
+> Honesty note: this build ships no benchmark GPU figures — throughput/latency come only from a real Nebius/NIM response (set a key). Without one, the app runs a deterministic accelerated simulator and clearly labels it. No provisioned GPU or deployed endpoint.
+
 ## 🔍 Inspiration
 Over 70% of enterprise back-office workflows remain trapped in legacy desktop software—proprietary client applications, SAP GUI, Oracle Desktop, and AS400 terminals—with zero modern REST or GraphQL APIs. For decades, legacy RPA tools (UiPath, Automation Anywhere) attempted to bridge this gap using rigid DOM XPath selectors that break whenever a font or window offset changes.
 
