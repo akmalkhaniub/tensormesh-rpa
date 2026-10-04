@@ -18,7 +18,7 @@
 ---
 
 ## 💡 Elevator Pitch
-TensorMesh RPA is an autonomous, OS-level visual Robotic Process Automation agent powered by the Nebius Token Factory and NVIDIA NIM on H100 SXM GPU clusters. By exploiting FP8 quantization and sub-50ms Time-to-First-Token, TensorMesh plans and executes multi-step desktop workflows at human-like reaction speeds (186 tokens/sec)—17.5x faster than CPU baselines. It grounds natural language instructions into precise 1920x1080 pixel centroids and executes robotic clicks, keystrokes, and text inputs across legacy enterprise ERP software without requiring APIs.
+TensorMesh RPA is an autonomous, OS-level visual Robotic Process Automation agent powered by the Nebius Token Factory and NVIDIA NIM on H100 SXM GPU clusters. By exploiting FP8 quantization and sub-50ms Time-to-First-Token, TensorMesh plans and executes multi-step desktop workflows at human-like reaction speeds, targeting ~17.5x faster response than CPU baselines (illustrative target — see the honesty note). It grounds natural language instructions into precise 1920x1080 pixel centroids and executes robotic clicks, keystrokes, and text inputs across legacy enterprise ERP software without requiring APIs.
 
 ---
 
@@ -46,8 +46,8 @@ Meanwhile, cloud LLM agents were far too slow: an 800ms+ Time-to-First-Token (TT
 1. **Dual-Engine Hardware Acceleration**:
    - **Primary Engine**: Nebius Token Factory (`https://api.studio.nebius.ai/v1`) driving Meta-Llama-3.1-70B on 80GB H100 SXM GPUs.
    - **Failover Engine**: Standalone NVIDIA NIM Catalog (`https://integrate.api.nvidia.com/v1`) with `meta/llama-3.3-70b-instruct`.
-2. **Sub-50ms TTFT & 186+ Tokens/Sec Throughput**:
-   - 17.5x faster Time-to-First-Token (48ms vs. 840ms on cloud CPUs) and 13.1x higher generation throughput.
+2. **Target: Sub-50ms TTFT & 186+ Tokens/Sec Throughput** _(illustrative, not measured)_:
+   - Targeting ~17.5x faster Time-to-First-Token (sub-50ms vs. ~840ms on cloud CPUs). Illustrative target, not measured — the live client reports the real latency.
 3. **Spatial UI Grounding Engine**:
    - Translates natural language goals (*"Search for Q3 audit and export CSV"*) into pixel-level centroids and bounding boxes on 1920x1080 displays.
 4. **Deterministic Spatial Safety Enclosures**:
@@ -106,7 +106,7 @@ Meanwhile, cloud LLM agents were far too slow: an 800ms+ Time-to-First-Token (TT
 ## 🏆 Accomplishments We're Proud Of
 
 - **100% Automated Verification Suite (5/5 Passing Tests)**: Validating spatial grounding, action sequencing, GPU benchmarking, Nebius Token Factory endpoints, and NVIDIA NIM catalog fallbacks.
-- **17.5x Latency Speedup**: Demonstrating real-time 48ms TTFT and 186.5 tokens/sec generation on Nebius H100 SXM hardware.
+- **Target: ~17.5x latency speedup** (sub-50ms TTFT, ~186 tokens/sec on Nebius H100 SXM). *Illustrative target, not measured — set NEBIUS_API_KEY for a live number; GPUBenchmarker returns `measured: false` until then.*
 - **Full Submission Asset Suite**: 16:9 interactive slide deck, cinematic hero presentation graphic, and structured 3-minute video script.
 
 ---

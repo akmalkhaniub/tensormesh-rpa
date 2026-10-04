@@ -1,7 +1,7 @@
 /**
  * GPUBenchmarker - Profiles TensorRT-LLM on NVIDIA hardware vs a baseline CPU.
- * NOTE: figures are representative reference numbers for the demo, not a live
- * measurement from provisioned Nebius GPUs.
+ * NOTE: this module reports NO fabricated figures (runBenchmark returns measured:false);
+ * a live latency is attached via recordLiveSample after a real Nebius/NIM response.
  */
 
 export interface HardwareProfile {
