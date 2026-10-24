@@ -15,7 +15,7 @@
 - **Presenter:** Akmal Khan
 - **Hackathon:** Nebius × NVIDIA Global AI Hackathon 2026 (Devpost)
 - **Repository:** [https://github.com/akmalkhaniub/tensormesh-rpa](https://github.com/akmalkhaniub/tensormesh-rpa)
-- **Visual:** NVIDIA H100 SXM 186 Tokens/sec Telemetry with Robotic OS Cursor Trajectory
+- **Visual:** The desktop simulator and a timing card that stays “not measured” until a live response returns.
 
 ---
 
@@ -32,8 +32,10 @@
 - **Dual-Engine Accelerated Inference**:
   - Primary: **Nebius Token Factory** (`https://api.studio.nebius.ai/v1`) driving Meta-Llama-3.1-70B on 80GB H100 SXM.
   - Failover: **NVIDIA NIM Catalog** (`https://integrate.api.nvidia.com/v1`) with `meta/llama-3.3-70b-instruct`.
-- **Sub-50ms TTFT & 186+ Tokens/Sec**:
-  - FP8 quantized TensorRT-LLM delivers 17.5x faster planning than CPU baselines, matching human cognitive reaction speeds.
+- **Live inference when a key is set**:
+  - Nebius Token Factory or NVIDIA NIM is called with streaming enabled.
+  - Time-to-first-token is taken from the first content chunk. Tokens per second are recorded only when the response includes `usage.completion_tokens`.
+  - Without a key, the planner is a simulator and the page says the timing is not measured.
 - **Spatial UI Grounding Engine**:
   - Translates natural language goals into bounding box centroids and absolute pixel actions `(X, Y)` with spatial safety assertion.
 
@@ -42,13 +44,12 @@
 ## Slide 4: Hardware Acceleration Benchmarking
 ### **Nebius H100 SXM vs. Cloud CPU Baselines**
 
-| Hardware Architecture | TTFT (Time-to-First-Token) | Throughput (Tokens/Sec) | Automation Step Latency | Relative Speedup |
-| :--- | :--- | :--- | :--- | :--- |
-| **Generic 16-Core Cloud CPU** | 840 ms | 14.2 tps | ~3.8 Seconds | Baseline (1.0x) |
-| **Standard Cloud GPU (A10G)** | 220 ms | 48.0 tps | ~1.1 Seconds | 3.8x Faster |
-| **Nebius NVIDIA H100 SXM (FP8)**| **48 ms** | **186.5 tps** | **~0.15 Seconds** | **17.5x Faster (13.1x Tps)** |
+| Hardware Architecture | TTFT | Throughput | Status |
+| :--- | :--- | :--- | :--- |
+| Generic 16-core cloud CPU | — | — | Not measured in this build |
+| Nebius or NVIDIA NIM | Recorded from the streamed response | Recorded only when the API returns `usage.completion_tokens` | Live when a key is set; otherwise the simulator |
 
-*Verified empirically across 5-step automated benchmarking suites.*
+*No speedup multiple is claimed. Earlier 48 ms / 186.5 tps figures were not measurements and have been removed.*
 
 ---
 
@@ -88,7 +89,7 @@
 ### **Live Robotic Automation Console**
 - **Virtual Enterprise ERP Canvas**: Visualizes dynamic application windows with highlighted interactive bounding boxes.
 - **Animated Robotic Cursor**: Real-time canvas vector path rendering displaying cursor trajectory, acceleration curves, and click clicks.
-- **Real-Time Hardware Telemetry**: Dynamic gauge showing Nebius H100 GPU throughput (186.5 tps) vs CPU baseline comparisons.
+- **Live timing**: The hardware card shows time-to-first-token only after a real streamed response. Throughput appears only when the API reports completion tokens.
 - **Zero-Config Fallback**: Testable immediately on `http://localhost:3004`.
 
 ---

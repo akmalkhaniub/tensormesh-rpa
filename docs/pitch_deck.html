@@ -289,7 +289,7 @@
         <div>
           <span class="slide-tag">Autonomous Visual RPA</span>
           <h2 class="slide-title">Human-Speed Visual OS Robotic Execution</h2>
-          <p class="slide-subtitle">Sub-50ms inference enables real-time visual grounding and fluid cursor control.</p>
+          <p class="slide-subtitle">Live time-to-first-token is shown only after a real Nebius or NVIDIA response.</p>
         </div>
         <span class="slide-number">03 / 08</span>
       </div>
@@ -300,7 +300,7 @@
             <span style="font-size: 28px;">⚡</span>
             <div>
               <h4 style="color: #fff; font-size: 17px; font-weight: 700;">Nebius Token Factory (H100 SXM)</h4>
-              <p style="color: var(--text-muted); font-size: 13px;">48ms Time-to-First-Token and 186.5 tokens/sec sustained throughput running Meta-Llama-3.1-70B.</p>
+              <p style="color: var(--text-muted); font-size: 13px;">Time-to-first-token and tokens per second are recorded from a live stream. They are not measured in the simulator.</p>
             </div>
           </div>
           <div style="display: flex; gap: 12px; align-items: center;">
@@ -326,7 +326,7 @@
           <span class="code-accent">Step 3:</span> [KEY_PRESS] Key: "Enter" (Submit Query)<br>
           <span class="code-accent">Step 4:</span> [CLICK] Target: "Export CSV" @ (1710, 920)<br><br>
           <span class="code-purple">Hardware:</span> NVIDIA H100 80GB SXM via Nebius Token Factory<br>
-          <span class="code-cyan">Planning Latency:</span> 48ms total execution time
+          <span class="code-cyan">Planning latency:</span> not measured until a live response returns
         </div>
       </div>
 
@@ -360,32 +360,21 @@
           </thead>
           <tbody>
             <tr>
-              <td><strong>Generic 16-Core Cloud CPU</strong></td>
-              <td>840 ms</td>
-              <td>14.2 tokens/sec</td>
-              <td>~3.8 Seconds</td>
-              <td>Baseline (1.0x)</td>
+              <td><strong>Generic 16-core cloud CPU</strong></td>
+              <td colspan="4">Not measured in this build</td>
             </tr>
             <tr>
-              <td><strong>Standard Cloud GPU (A10G)</strong></td>
-              <td>220 ms</td>
-              <td>48.0 tokens/sec</td>
-              <td>~1.1 Seconds</td>
-              <td>3.8x Faster</td>
-            </tr>
-            <tr>
-              <td><strong>NVIDIA H100 SXM (Nebius Cloud)</strong></td>
-              <td class="highlight-cell">48 ms</td>
-              <td class="highlight-cell">186.5 tokens/sec</td>
-              <td class="highlight-cell">~0.15 Seconds</td>
-              <td class="highlight-cell">17.5x Faster (13.1x TPS)</td>
+              <td><strong>Nebius or NVIDIA NIM</strong></td>
+              <td class="highlight-cell">From the live stream</td>
+              <td class="highlight-cell">Only if usage is reported</td>
+              <td colspan="2">Otherwise the simulator, labelled not measured</td>
             </tr>
           </tbody>
         </table>
       </div>
 
       <div class="slide-footer">
-        <span class="footer-badge">FP8 Quantized TensorRT-LLM Acceleration</span>
+        <span class="footer-badge">Timing is recorded from a live response, or labelled not measured</span>
         <span>Inference Metrics</span>
       </div>
     </section>
@@ -489,7 +478,7 @@
         <div class="feature-card">
           <div class="card-icon">📊</div>
           <h3 class="card-title">H100 Speedometer</h3>
-          <p class="card-desc">Live performance gauges comparing Nebius H100 186 tokens/sec execution directly against CPU baselines.</p>
+          <p class="card-desc">The timing card shows a live measurement only after Nebius or NVIDIA returns one. Otherwise it says not measured.</p>
         </div>
       </div>
 

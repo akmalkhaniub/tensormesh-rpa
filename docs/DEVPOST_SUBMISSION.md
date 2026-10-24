@@ -18,7 +18,7 @@
 ---
 
 ## 💡 Elevator Pitch
-TensorMesh RPA is an autonomous, OS-level visual Robotic Process Automation agent powered by the Nebius Token Factory and NVIDIA NIM on H100 SXM GPU clusters. By exploiting FP8 quantization and sub-50ms Time-to-First-Token, TensorMesh plans and executes multi-step desktop workflows at human-like reaction speeds, targeting ~17.5x faster response than CPU baselines (illustrative target — see the honesty note). It grounds natural language instructions into precise 1920x1080 pixel centroids and executes robotic clicks, keystrokes, and text inputs across legacy enterprise ERP software without requiring APIs.
+TensorMesh RPA turns a written desktop instruction into a sequence of clicks, typing, and keypresses. With `NEBIUS_API_KEY` or `NVIDIA_API_KEY` it calls Nebius Token Factory or NVIDIA NIM and records time-to-first-token from the stream. Without a key it uses a deterministic simulator and the page says the timing is not measured. It does not claim a tokens-per-second figure unless the API returns a completion-token count.
 
 ---
 
@@ -37,7 +37,7 @@ TensorMesh RPA is an autonomous, OS-level visual Robotic Process Automation agen
 ## 🔍 Inspiration
 Over 70% of enterprise back-office workflows remain trapped in legacy desktop software—proprietary client applications, SAP GUI, Oracle Desktop, and AS400 terminals—with zero modern REST or GraphQL APIs. For decades, legacy RPA tools (UiPath, Automation Anywhere) attempted to bridge this gap using rigid DOM XPath selectors that break whenever a font or window offset changes.
 
-Meanwhile, cloud LLM agents were far too slow: an 800ms+ Time-to-First-Token (TTFT) makes live robotic cursor control erratic, sluggish, and unusable. We asked: **What if we could harness Nebius AI Studio's H100 SXM clusters and NVIDIA TensorRT-LLM to deliver sub-50ms visual RPA that operates at human speed?**
+We asked whether a desktop agent could call Nebius Token Factory or NVIDIA NIM, turn the reply into clicks and keystrokes, and show only timings that the response itself measured.
 
 ---
 
@@ -46,14 +46,14 @@ Meanwhile, cloud LLM agents were far too slow: an 800ms+ Time-to-First-Token (TT
 1. **Dual-Engine Hardware Acceleration**:
    - **Primary Engine**: Nebius Token Factory (`https://api.studio.nebius.ai/v1`) driving Meta-Llama-3.1-70B on 80GB H100 SXM GPUs.
    - **Failover Engine**: Standalone NVIDIA NIM Catalog (`https://integrate.api.nvidia.com/v1`) with `meta/llama-3.3-70b-instruct`.
-2. **Target: Sub-50ms TTFT & 186+ Tokens/Sec Throughput** _(illustrative, not measured)_:
-   - Targeting ~17.5x faster Time-to-First-Token (sub-50ms vs. ~840ms on cloud CPUs). Illustrative target, not measured — the live client reports the real latency.
+2. **Live timing**:
+   - Time-to-first-token is measured from a live stream. Throughput is recorded only when the API reports completion tokens. The simulator does not publish either number.
 3. **Spatial UI Grounding Engine**:
    - Translates natural language goals (*"Search for Q3 audit and export CSV"*) into pixel-level centroids and bounding boxes on 1920x1080 displays.
 4. **Deterministic Spatial Safety Enclosures**:
    - Clamps coordinates to valid screen boundaries, discarding illegal out-of-bounds clicks.
 5. **Interactive Virtual Desktop Simulator**:
-   - Live canvas with real-time robotic cursor vector rendering, easing curves, and dynamic H100 vs. CPU benchmark gauges.
+   - The page shows the planned clicks. The timing card stays “not measured” until a live response returns.
 
 ---
 
@@ -106,7 +106,7 @@ Meanwhile, cloud LLM agents were far too slow: an 800ms+ Time-to-First-Token (TT
 ## 🏆 Accomplishments We're Proud Of
 
 - **100% Automated Verification Suite (5/5 Passing Tests)**: Validating spatial grounding, action sequencing, GPU benchmarking, Nebius Token Factory endpoints, and NVIDIA NIM catalog fallbacks.
-- **Target: ~17.5x latency speedup** (sub-50ms TTFT, ~186 tokens/sec on Nebius H100 SXM). *Illustrative target, not measured — set NEBIUS_API_KEY for a live number; GPUBenchmarker returns `measured: false` until then.*
+- **Live timing when a key is set.** Time-to-first-token comes from the first streamed content chunk. Tokens per second are recorded only from `usage.completion_tokens`. `GPUBenchmarker.runBenchmark()` returns `measured: false`.
 - **Full Submission Asset Suite**: 16:9 interactive slide deck, cinematic hero presentation graphic, and structured 3-minute video script.
 
 ---

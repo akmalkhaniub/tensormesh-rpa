@@ -2,7 +2,7 @@ import assert from 'assert';
 import { UIGroundingEngine } from '../src/ui_grounding_engine.js';
 import { ActionPlanner } from '../src/action_planner.js';
 import { GPUBenchmarker } from '../src/gpu_benchmarker.js';
-import { NebiusNvidiaClient } from '../src/nebius_nvidia_client.js';
+import { NebiusNvidiaClient, consumeChatStream } from '../src/nebius_nvidia_client.js';
 
 console.log('🧪 Starting TensorMesh RPA Automated Verification Suite (Nebius x NVIDIA Hackathon 2026)...\n');
 
@@ -58,4 +58,27 @@ const parsed = nebiusClient.parseModelOutput({
 assert(parsed.actions.length === 1 && parsed.actions[0].type === 'CLICK', 'Must extract the CLICK action from model JSON');
 console.log('   ✅ parseModelOutput extracted structured actions from a chat completion.');
 
-console.log('\n🎉 ALL 6 TENSORMESH RPA & NEBIUS x NVIDIA TESTS PASSED WITH 100% SUCCESS!\n');
+console.log('7️⃣ Testing streamed timing (no invented throughput)...');
+const streamed = await consumeChatStream(
+  (async function* () {
+    yield new TextEncoder().encode('data: {"choices":[{"delta":{"content":"["}}]}\n');
+    yield new TextEncoder().encode('data: {"choices":[{"delta":{"content":"]"}}]}\n');
+    yield new TextEncoder().encode('data: {"usage":{"completion_tokens":8}}\n');
+  })(),
+  1_000,
+  () => 1_050
+);
+assert(streamed.ttftMs === 50, 'TTFT is the clock at the first content chunk');
+assert(streamed.usageReported && streamed.completionTokens === 8, 'Token count comes from the usage event');
+const noUsage = await consumeChatStream(
+  (async function* () {
+    yield new TextEncoder().encode('data: {"choices":[{"delta":{"content":"hi"}}]}');
+  })(),
+  0,
+  () => 10
+);
+assert(noUsage.usageReported === false && noUsage.completionTokens === 0, 'A stream without usage must not invent a token count');
+assert(noUsage.content === 'hi', 'A final SSE line without a trailing newline is still read');
+console.log('   ✅ Stream timing uses reported usage only.');
+
+console.log('\n🎉 ALL TENSORMESH RPA TESTS PASSED.\n');

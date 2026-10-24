@@ -7,9 +7,9 @@
 [![Tests: 100% Passing](https://img.shields.io/badge/Tests-5%2F5%20Passed-emerald.svg)](./test)
 
 > **Built for the [Nebius AI Studio & NVIDIA NIM Hackathon (Devpost)](https://nebius-nvidia.devpost.com/)**  
-> *Submission Deadline: October 26, 2026*
+> *Submission Deadline: October 30, 2026, 10:00am PDT*
 
-TensorMesh RPA is an autonomous OS-level Robotic Process Automation agent powered by **Nebius Token Factory** and **NVIDIA NIM on H100 SXM GPU clusters**. Utilizing FP8 TensorRT-LLM quantization, TensorMesh delivers sub-50ms Time-to-First-Token (TTFT) and 186+ tokens/second throughput. It grounds natural language human instructions into visual screen coordinates, plans zero-drift multi-step action sequences (clicks, typing, keystrokes), and executes automation directly on legacy enterprise applications without APIs.
+TensorMesh RPA plans desktop actions from a written instruction. With `NEBIUS_API_KEY` or `NVIDIA_API_KEY` it calls Nebius Token Factory or NVIDIA NIM and records time-to-first-token from the streamed response. Without a key it runs a deterministic simulator and reports latency as not measured.
 
 ---
 
@@ -42,9 +42,8 @@ TensorMesh RPA is an autonomous OS-level Robotic Process Automation agent powere
 ### 1. Nebius Token Factory & NVIDIA NIM Dual-Engine Support
 Employs the 2026 **Nebius Token Factory** OpenAI-compatible API (`https://api.studio.nebius.ai/v1`) running on Nebius H100 SXM clusters with automatic failover to the standalone **NVIDIA NIM Catalog** (`https://integrate.api.nvidia.com/v1`).
 
-### 2. FP8 TensorRT-LLM Hardware Benchmarking
-- **GPU numbers are unmeasured** until `NEBIUS_API_KEY` or `NVIDIA_API_KEY` is set. The old 48ms / 186.5 tps figures were hardcoded and have been removed.
-- **13.1x Higher Throughput**: 186.5 tokens/sec sustained generation speed for fluid robotic orchestration.
+### 2. Measured timing
+GPU latency and throughput are recorded only from a live streamed response (`measured: true`, with token counts taken from the API usage field). The simulator returns `measured: false` and does not publish a tokens-per-second figure.
 
 ### 3. Spatial Grounding & Safety Bounding
 Maps screen elements (inputs, tables, buttons) into safe pixel coordinates `(X, Y)` bounded inside the display resolution, preventing dangerous out-of-bounds clicks.
@@ -96,7 +95,7 @@ Open [http://localhost:3004](http://localhost:3004) in your browser:
 1. View the **Enterprise ERP Workspace** with bounding box overlays.
 2. Select **Nebius Token Factory** or **NVIDIA NIM** from the engine dropdown.
 3. Click **"Execute RPA"** to watch the robotic cursor autonomously glide to the search input, type query text, press Enter, and click Export.
-4. Inspect the **Nebius H100 vs CPU Benchmark Matrix** in real time.
+4. The hardware card stays **not measured** until that plan came from a live API call.
 
 ---
 
@@ -108,28 +107,7 @@ node test/verify_tensormesh.js
 ```
 
 ### Verification Results
-```
-🧪 Starting TensorMesh RPA Automated Verification Suite (Nebius x NVIDIA Hackathon 2026)...
-
-1️⃣ Testing Visual Element Grounding...
-   ✅ Grounded "Customer Search Input" to coordinates (650, 120) with confidence 0.965.
-2️⃣ Testing Action Planner Sequence Generation...
-   ✅ Generated 4-step robotic automation plan (Est. time: 600ms):
-      Step 1 [CLICK]: Focus on search field at (650, 120)
-      Step 2 [TYPE]: Input query string "Q3_Enterprise_Audit_2026"
-      Step 3 [KEY_PRESS]: Send Enter key to submit query
-      Step 4 [CLICK]: Click "Submit Button" to execute batch operation
-3️⃣ Testing NVIDIA TensorRT-LLM on Nebius Cloud Performance Metrics...
-   ⚡ Hardware 1: Generic 16-Core Cloud CPU -> TTFT: 840ms | Throughput: 14.2 tps
-   🚀 Hardware 2: NVIDIA H100 80GB SXM (Nebius AI Cloud) -> TTFT: 48ms | Throughput: 186.5 tps
-   📈 Speedup Factor: 17.5x faster | 13.1x higher throughput
-4️⃣ Testing Nebius Token Factory 2026 API Integration...
-   ✅ Nebius Token Factory planned 5 actions in 48ms (186.5 tps).
-5️⃣ Testing Standalone NVIDIA NIM Catalog Fallback...
-   ✅ NVIDIA NIM Catalog verified on model meta/llama-3.3-70b-instruct.
-
-🎉 ALL 5 TENSORMESH RPA & NEBIUS x NVIDIA TESTS PASSED WITH 100% SUCCESS!
-```
+Run `npm test`. The suite checks grounding, the action planner, that `runBenchmark()` returns `measured: false`, the simulator plan, the response parser, and that a stream without a usage field does not invent a token count. It does not print a GPU speed.
 
 ---
 

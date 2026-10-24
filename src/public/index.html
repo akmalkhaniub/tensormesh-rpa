@@ -146,7 +146,7 @@
           <div class="p-3 rounded-2xl bg-slate-950 border border-slate-800 space-y-1">
             <div class="flex justify-between text-xs">
               <span class="text-slate-400">NVIDIA H100 SXM (Nebius Cloud)</span>
-              <strong class="text-emerald-400">186.5 tps • 48ms TTFT</strong>
+              <strong id="gpuFigures" class="text-slate-300">not measured</strong>
             </div>
             <div class="w-full bg-slate-800 h-2 rounded-full overflow-hidden">
               <div class="bg-gradient-to-r from-cyan-500 to-green-400 h-full w-[95%]"></div>
@@ -156,7 +156,7 @@
           <div class="p-3 rounded-2xl bg-slate-950 border border-slate-800 space-y-1">
             <div class="flex justify-between text-xs">
               <span class="text-slate-400">Baseline 16-Core Cloud CPU</span>
-              <span class="text-slate-400 font-mono">14.2 tps • 840ms TTFT</span>
+              <span id="cpuFigures" class="text-slate-400 font-mono">not measured</span>
             </div>
             <div class="w-full bg-slate-800 h-2 rounded-full overflow-hidden">
               <div class="bg-slate-600 h-full w-[12%]"></div>
@@ -166,7 +166,7 @@
 
         <div class="p-2.5 rounded-xl bg-cyan-950/30 border border-cyan-500/20 text-[11px] text-cyan-300 flex items-center space-x-2">
           <i class="fa-solid fa-circle-check"></i>
-          <span>Target: ~17.5x faster response on Nebius H100 SXM — illustrative, replaced by a live number once a key is set.</span>
+          <span id="gpuNote">No live Nebius or NVIDIA timing yet. Set NEBIUS_API_KEY or NVIDIA_API_KEY and run a plan.</span>
         </div>
       </div>
 
@@ -191,6 +191,22 @@
     };
 
     function renderPlan(plan) {
+      const badge = document.getElementById('planLatencyBadge');
+      const gpuLine = document.getElementById('gpuFigures');
+      const note = document.getElementById('gpuNote');
+      if (plan.measured && plan.ttftMs) {
+        const tps = plan.throughputTps ? plan.throughputTps + ' tok/s · ' : '';
+        badge.textContent = tps + 'TTFT ' + plan.ttftMs + ' ms · measured';
+        gpuLine.textContent = plan.throughputTps
+          ? plan.throughputTps + ' tok/s · ' + plan.ttftMs + ' ms TTFT'
+          : plan.ttftMs + ' ms TTFT · throughput not in the response';
+        note.textContent = 'Measured on this run via ' + (plan.engineUsed || 'the live API') + '.';
+      } else {
+        badge.textContent = 'Simulator · not measured';
+        gpuLine.textContent = 'not measured';
+        note.textContent = 'No live Nebius or NVIDIA timing yet. Set NEBIUS_API_KEY or NVIDIA_API_KEY and run a plan.';
+      }
+
       stepList.innerHTML = '';
       plan.actions.forEach((act, idx) => {
         const item = document.createElement('div');

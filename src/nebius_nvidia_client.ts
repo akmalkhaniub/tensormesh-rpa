@@ -23,6 +23,54 @@ export interface RpaPlan {
   latencyMs: number;
   throughputTps: number;
   actions: RpaAction[];
+  /** True only when numbers come from a real streamed API response. */
+  measured?: boolean;
+  /** Measured time-to-first-token (ms) from the live stream. */
+  ttftMs?: number;
+  completionTokens?: number;
+}
+
+/** Parse an OpenAI-compatible SSE body; returns content and timing. Exported for tests. */
+export async function consumeChatStream(
+  body: AsyncIterable<Uint8Array>,
+  startedAt: number,
+  now: () => number = Date.now
+): Promise<{ content: string; ttftMs: number; totalMs: number; completionTokens: number; usageReported: boolean }> {
+  const decoder = new TextDecoder();
+  let buffer = '';
+  let content = '';
+  let ttftMs = 0;
+  let completionTokens = 0;
+  let usageReported = false;
+  const takeLine = (raw: string) => {
+    const line = raw.trim();
+    if (!line.startsWith('data:')) return;
+    const payload = line.slice(5).trim();
+    if (payload === '[DONE]') return;
+    try {
+      const evt = JSON.parse(payload);
+      const delta: string = evt?.choices?.[0]?.delta?.content ?? '';
+      if (delta) {
+        if (!ttftMs) ttftMs = Math.max(1, now() - startedAt);
+        content += delta;
+      }
+      if (evt?.usage?.completion_tokens) {
+        completionTokens = evt.usage.completion_tokens;
+        usageReported = true;
+      }
+    } catch {
+      /* ignore malformed keep-alive lines */
+    }
+  };
+  for await (const part of body) {
+    buffer += decoder.decode(part, { stream: true });
+    const lines = buffer.split('\n');
+    buffer = lines.pop() ?? '';
+    for (const raw of lines) takeLine(raw);
+  }
+  buffer += decoder.decode();
+  if (buffer.trim()) takeLine(buffer);
+  return { content, ttftMs, totalMs: now() - startedAt, completionTokens, usageReported };
 }
 
 export interface ClientOptions {
@@ -76,12 +124,24 @@ export class NebiusNvidiaClient {
             { role: 'user', content: `Goal: ${prompt}\nScreen Elements: ${JSON.stringify(screenElements)}` }
           ],
           temperature: 0.1,
-          max_tokens: 1024
+          max_tokens: 1024,
+          stream: true,
+          stream_options: { include_usage: true }
         })
       });
-      if (!response.ok) throw new Error(`Inference API HTTP ${response.status}`);
-      const data = await response.json();
-      return this.parseModelOutput(data, Date.now() - startedAt);
+      if (!response.ok || !response.body) throw new Error(`Inference API HTTP ${response.status}`);
+      const s = await consumeChatStream(response.body as unknown as AsyncIterable<Uint8Array>, startedAt);
+      const plan = this.parseModelOutput({ choices: [{ message: { content: s.content } }] }, s.totalMs);
+      const genSeconds = (s.totalMs - s.ttftMs) / 1000;
+      plan.ttftMs = s.ttftMs || undefined;
+      plan.measured = s.ttftMs > 0;
+      if (s.usageReported && genSeconds > 0) {
+        plan.completionTokens = s.completionTokens;
+        plan.throughputTps = Number((s.completionTokens / genSeconds).toFixed(1));
+      } else {
+        plan.throughputTps = 0;
+      }
+      return plan;
     } catch (err) {
       console.warn('⚠️ Inference API error, using accelerated local simulator:', (err as Error).message);
       return this.simulatePlanning(prompt, screenElements);
@@ -146,6 +206,7 @@ export class NebiusNvidiaClient {
       model: this.model,
       latencyMs: 0,
       throughputTps: 0,
+      measured: false,
       actions: [
         { step: 1, type: 'CLICK', coordinates: { x: searchX, y: searchY }, description: `Click at (${searchX}, ${searchY})` },
         { step: 2, type: 'TYPE', text: 'Enterprise Audit Logs 2026', description: 'Type search query' },
