@@ -69,6 +69,11 @@ export class UIGroundingEngine {
     const centerX = Math.round((xmin + xmax) / 2);
     const centerY = Math.round((ymin + ymax) / 2);
     const isSafe = centerX >= 0 && centerX <= this.screenWidth && centerY >= 0 && centerY <= this.screenHeight;
+    const confidence = bestScore === Infinity
+      ? 1
+      : descTokens.length > 0 && bestScore > 0
+        ? bestScore / descTokens.length
+        : match.label === targetDescription ? 0.2 : 0.35;
 
     return {
       targetDescription,
@@ -77,7 +82,7 @@ export class UIGroundingEngine {
       bbox: match.bbox,
       coordinates: { x: centerX, y: centerY },
       isSafe,
-      groundingConfidence: 0.965
+      groundingConfidence: Number(Math.min(1, confidence).toFixed(3))
     };
   }
 }

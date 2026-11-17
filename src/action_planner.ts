@@ -21,6 +21,15 @@ export interface ActionPlan {
   actions: PlannedAction[];
 }
 
+/** Pull the search text out of a goal. Quoted text wins; otherwise the words after "search for". */
+export function extractSearchText(goal: string): string {
+  const quoted = goal.match(/["“]([^"”]+)["”]/);
+  if (quoted) return quoted[1].trim();
+  const match = goal.match(/\b(?:search|find|look up|filter)\s+(?:for\s+)?(.+)/i);
+  const raw = (match ? match[1] : goal).split(/\s+\b(?:and|then)\b\s+/i)[0];
+  return raw.replace(/[?.!]+$/g, '').trim().slice(0, 120) || goal.trim().slice(0, 120);
+}
+
 export class ActionPlanner {
   constructor(private grounding: UIGroundingEngine) {}
 
@@ -29,10 +38,11 @@ export class ActionPlanner {
     const goal = goalDescription.toLowerCase();
     const actions: PlannedAction[] = [];
 
-    if (goal.includes('search') || goal.includes('filter')) {
+    if (goal.includes('search') || goal.includes('filter') || goal.includes('find')) {
       const searchTarget = this.grounding.groundElement('Search Input', screenContextElements);
+      const text = extractSearchText(goalDescription);
       actions.push({ step: 1, type: 'CLICK', target: searchTarget.matchedLabel, coordinates: searchTarget.coordinates, description: `Focus on search field at (${searchTarget.coordinates.x}, ${searchTarget.coordinates.y})` });
-      actions.push({ step: 2, type: 'TYPE', payload: 'Q3_Enterprise_Audit_2026', description: 'Input query string "Q3_Enterprise_Audit_2026"' });
+      actions.push({ step: 2, type: 'TYPE', payload: text, description: `Input query string "${text}"` });
       actions.push({ step: 3, type: 'KEY_PRESS', key: 'ENTER', description: 'Send Enter key to submit query' });
     }
 

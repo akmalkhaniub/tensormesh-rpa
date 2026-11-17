@@ -70,7 +70,7 @@
                  ▼
 [ Deterministic Robotic Action Stream ]
   ├── [CLICK]: Focus search field at (650, 120)
-  ├── [TYPE]: Input query "Q3_Enterprise_Audit_2026"
+  ├── [TYPE]: the search words taken from the prompt
   ├── [KEY_PRESS]: Send Enter key
   └── [CLICK]: Click "Export CSV" button at (1710, 920)
 ```

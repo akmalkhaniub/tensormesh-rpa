@@ -78,7 +78,7 @@ We asked whether a desktop agent could call Nebius Token Factory or NVIDIA NIM, 
                  ▼
 [ Deterministic Robotic Execution Stream ]
   ├── Step 1 [CLICK]: Focus on search input at (650, 120)
-  ├── Step 2 [TYPE]: Input query string "Q3_Enterprise_Audit_2026"
+  ├── Step 2 [TYPE]: the search words taken from the prompt
   ├── Step 3 [KEY_PRESS]: Send Enter key to submit query
   └── Step 4 [CLICK]: Click Export Button at (1710, 920)
 ```

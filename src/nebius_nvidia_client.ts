@@ -6,6 +6,7 @@
  * returns a deterministic accelerated-simulator plan.
  */
 import type { DetectedElement } from './ui_grounding_engine.js';
+import { extractSearchText } from './action_planner.js';
 
 export interface RpaAction {
   step: number;
@@ -196,6 +197,7 @@ export class NebiusNvidiaClient {
     const searchTarget = screenElements.find((e) => e.type === 'INPUT') || { bbox: [100, 450, 140, 850] as [number, number, number, number] };
     const btnTarget = screenElements.find((e) => e.type === 'BUTTON') || { bbox: [900, 1600, 940, 1820] as [number, number, number, number] };
 
+    const queryText = extractSearchText(_prompt);
     const searchX = Math.round((searchTarget.bbox[1] + searchTarget.bbox[3]) / 2);
     const searchY = Math.round((searchTarget.bbox[0] + searchTarget.bbox[2]) / 2);
     const btnX = Math.round((btnTarget.bbox[1] + btnTarget.bbox[3]) / 2);
@@ -209,7 +211,7 @@ export class NebiusNvidiaClient {
       measured: false,
       actions: [
         { step: 1, type: 'CLICK', coordinates: { x: searchX, y: searchY }, description: `Click at (${searchX}, ${searchY})` },
-        { step: 2, type: 'TYPE', text: 'Enterprise Audit Logs 2026', description: 'Type search query' },
+        { step: 2, type: 'TYPE', text: queryText, description: `Type search query "${queryText}"` },
         { step: 3, type: 'KEY_PRESS', key: 'Enter', description: 'Press Enter to submit query' },
         { step: 4, type: 'WAIT', durationMs: 500, description: 'Wait for data grid to populate' },
         { step: 5, type: 'CLICK', coordinates: { x: btnX, y: btnY }, description: `Click Export Button at (${btnX}, ${btnY})` }

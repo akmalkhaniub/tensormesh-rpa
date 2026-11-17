@@ -26,7 +26,7 @@ console.log('2️⃣ Testing Action Planner Sequence Generation...');
 const planResult = planner.plan('Search for enterprise audit logs and export report', detectedScreenElements);
 assert(planResult.totalSteps >= 3, `Expected at least 3 steps, got ${planResult.totalSteps}`);
 assert(planResult.actions.some((a) => a.type === 'CLICK'), 'Must contain CLICK action');
-assert(planResult.actions.some((a) => a.type === 'TYPE'), 'Must contain TYPE action');
+assert(planResult.actions.some((a) => a.type === 'TYPE' && a.payload === 'enterprise audit logs'), 'Typed text must come from the goal, not a fixed string');
 assert(planResult.actions.some((a) => a.type === 'KEY_PRESS'), 'Must contain KEY_PRESS action');
 console.log(`   ✅ Generated ${planResult.totalSteps}-step plan.`);
 

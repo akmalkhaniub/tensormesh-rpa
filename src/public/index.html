@@ -244,7 +244,7 @@
             cursor.style.left = '85%';
           }
         } else if (act.type === 'TYPE') {
-          document.getElementById('searchInputText').innerText = act.text || 'Enterprise Audit Logs 2026';
+          document.getElementById('searchInputText').innerText = act.text || act.payload || '';
           document.getElementById('searchInputText').classList.add('text-white', 'font-bold');
         }
 
